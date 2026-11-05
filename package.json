@@ -1,0 +1,9 @@
+{
+  "name": "larkspur-laptop",
+  "private": true,
+  "type": "module",
+  "description": "The Larkspur Dome, laptop version: the website's game run over the home Wi-Fi. No dependencies.",
+  "main": "server.mjs",
+  "scripts": { "start": "node server.mjs" },
+  "engines": { "node": ">=18" }
+}

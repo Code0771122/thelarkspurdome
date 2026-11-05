@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07090f">
+<title>The Larkspur Dome · Host</title>
+<link rel="icon" href="/media/crest.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;1,6..96,400;1,6..96,500&family=Spectral:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&family=Courier+Prime:wght@400;700&family=Special+Elite&family=IM+Fell+English:ital@0;1&display=swap">
+<link rel="stylesheet" href="/css/paper.css">
+<link rel="stylesheet" href="/css/night.css">
+<link rel="stylesheet" href="/css/exhibits.css">
+<link rel="stylesheet" href="/css/laptop.css">
+<link rel="stylesheet" href="/css/larkspur.css">
+<style>
+  .tgate { background: linear-gradient(90deg, rgba(5,6,10,.92) 0%, rgba(5,6,10,.7) 40%, rgba(5,6,10,.15) 75%), linear-gradient(0deg, rgba(5,6,10,.8), transparent 30%); justify-content: flex-start !important; align-items: center !important; }
+  .tg { width: min(100% - 56px, 720px); margin-left: clamp(28px, 7vw, 130px); color: #efe6d2; }
+  .tg-k { font: 500 12px/1 "IBM Plex Mono", monospace; letter-spacing: .34em; text-transform: uppercase; color: #c9a35a; display: flex; gap: 16px; align-items: center; margin: 0 0 28px; }
+  .tg-k::after { content: ""; width: 70px; height: 1px; background: #c9a35a; opacity: .6; }
+  .tg-h { font: 400 clamp(56px, 7vw, 120px)/.92 "Bodoni Moda", Didot, Georgia, serif; margin: 0; color: #efe6d2; }
+  .tg-h em { color: #c9a35a; }
+  .tg-s { font: italic 400 clamp(18px, 1.5vw, 23px)/1.5 Spectral, Georgia, serif; color: rgba(239,230,210,.66); max-width: 30em; margin: 26px 0 24px; }
+  .tg-f { display: flex; flex-wrap: wrap; font: 500 12px/1 "IBM Plex Mono", monospace; letter-spacing: .22em; text-transform: uppercase; color: rgba(239,230,210,.4); margin: 0 0 42px; }
+  .tg-f span { white-space: nowrap; } .tg-f span + span::before { content: "\2014"; margin: 0 14px; color: rgba(201,163,90,.55); letter-spacing: 0; }
+  .tg-b { display: flex; justify-content: space-between; align-items: center; gap: 24px; width: min(100%, 520px); padding: 22px 26px; margin: 0 0 14px; border: 1px solid #c9a35a; border-radius: 14px;
+    background: linear-gradient(90deg, rgba(201,163,90,.16), rgba(201,163,90,.04)); color: #efe6d2; cursor: pointer; font: 500 14px/1 "IBM Plex Mono", monospace; letter-spacing: .3em; text-transform: uppercase; transition: background .25s, color .25s; }
+  .tg-b span:last-child { font-size: 11px; letter-spacing: .18em; color: rgba(239,230,210,.5); }
+  .tg-b:hover, .tg-b:focus-visible { background: #c9a35a; color: #120d05; outline: none; }
+  .tg-b:hover span:last-child, .tg-b:focus-visible span:last-child { color: rgba(18,13,5,.7); }
+  .tg-b.ghost { border-color: rgba(239,230,210,.25); background: none; }
+  .tg-b[hidden] { display: none; }
+  .tg-n { font: italic 400 15px/1.5 Spectral, Georgia, serif; color: rgba(239,230,210,.45); max-width: 34em; margin: 18px 0 0; }
+  .tg-n.warn { color: #e59a8a; min-height: 1em; margin-top: 6px; }
+</style>
+</head>
+<body class="night host">
+<canvas id="film" class="film" aria-hidden="true"></canvas>
+<div class="bg" aria-hidden="true"></div>
+<div id="scene" class="scene-bg" aria-hidden="true"></div>
+
+<button class="fs-btn" data-fs type="button" aria-pressed="false" title="Full screen (F)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7V3h4M13 3h4v4M17 13v4h-4M7 17H3v-4"/></svg><span>Full screen</span></button>
+
+<div id="gate" class="gate tgate">
+  <div class="tg">
+    <p class="tg-k">A Corvin mystery &middot; Argyll, 1952</p>
+    <h1 class="tg-h">The Larkspur <em>Dome</em></h1>
+    <p class="tg-s">The night of the Perseids. A toast to honesty at midnight. By five past twelve, the Professor is dead in his armchair, his brandy untouched.</p>
+    <div class="tg-f"><span>Ten guests</span><span>Seven ladies, three gentlemen</span><span>One hour forty</span></div>
+    <button id="open" class="tg-b" type="button"><span>Open the house</span><span>Full screen &middot; sound on &nbsp;&rarr;</span></button>
+    <button id="resume" class="tg-b ghost" type="button" hidden><span>Carry on</span><span id="resumeH"></span></button>
+    <p class="tg-n">Put this screen where everyone can see it, a TV or a laptop. Guests play on their own phones. Press F for full screen.</p>
+    <p id="gateMsg" class="tg-n warn"></p>
+  </div>
+</div>
+
+<!-- ============ LOBBY ============ -->
+<main id="lobby" class="lobby" hidden>
+  <aside class="glass lobby-left">
+    <div class="eyebrow">Larkspur House &middot; 12 August 1952</div>
+    <h1 class="display">The Larkspur Dome</h1>
+    <p class="lede">Every guest joins on their own phone. This screen is Corvin&rsquo;s dome.</p>
+    <div class="join">
+      <div id="qr" class="qr" aria-label="QR code: scan with a phone camera to join"></div>
+      <div class="join-t">
+        <div class="label">Game code</div>
+        <div id="roomCode" class="room-code"></div>
+        <div class="label">Scan, or go to</div>
+        <div id="joinUrl" class="url"></div>
+        <div class="note">and type the code.</div>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><b>Scan the code.</b> Write your real name and choose a lady&rsquo;s or a gentleman&rsquo;s part. Then sign the police form about yourself.</li>
+      <li><b>The host plays too.</b> Join on your own phone like everyone else. This screen never shows anyone&rsquo;s secrets, so you can run it and still be a suspect.</li>
+      <li><b>Wait for the others.</b> Ten guests: seven ladies and three gentlemen.</li>
+      <li><b>When every seat is full,</b> press <i>Distribute dossiers</i>. Everyone gets a secret character, and one of you is a murderer.</li>
+    </ol>
+    <blockquote class="quote">
+      <p>&ldquo;I live in the dome, and I see everything. Nobody ever thinks to ask the raven.&rdquo;</p>
+      <cite>Corvin</cite>
+    </blockquote>
+  </aside>
+
+  <section class="glass table-card">
+    <header class="table-head">
+      <div>
+        <div class="label">The visitors&rsquo; book</div>
+        <h2 class="h2">Guests at Larkspur</h2>
+      </div>
+      <div class="tally" id="tally"></div>
+    </header>
+    <div class="seat-group">
+      <div class="seat-title"><span>The ladies</span><span id="fCount" class="count"></span></div>
+      <ol id="seatsF" class="seats"></ol>
+    </div>
+    <div class="seat-group">
+      <div class="seat-title"><span>The gentlemen</span><span id="mCount" class="count"></span></div>
+      <ol id="seatsM" class="seats"></ol>
+    </div>
+    <div class="table-foot">
+      <p id="lobbyHint" class="hint"></p>
+      <button id="distribute" class="row lit big"><span class="row-t">Distribute dossiers</span><span class="row-h" id="countLine"></span></button>
+      <p id="lobbyMsg" class="note warn"></p>
+    </div>
+  </section>
+</main>
+
+<!-- ============ THE NIGHT ============ -->
+<main id="desk" class="shell" hidden>
+  <aside class="glass panel">
+    <div class="eyebrow">The Larkspur Dome</div>
+
+    <section class="act-card" id="actCard">
+      <ol class="acts" id="acts" aria-label="Rounds"></ol>
+      <div class="act-n" id="actN"></div>
+      <h2 class="act-title" id="actTitle"></h2>
+      <div class="label read-row">Corvin says <button id="speak" class="mini-btn" type="button" aria-pressed="false" title="Corvin reads aloud">&#128266; Read aloud</button></div>
+      <p class="script" id="actScript"></p>
+      <p class="host-do" id="actHost"></p>
+      <p class="hint-line" id="actHint" hidden></p>
+      <div class="act-tools" id="actTools"></div>
+      <div class="act-nav">
+        <button id="actPrev" class="pill-btn" aria-label="Previous round">&larr;</button>
+        <button id="actNext" class="row lit"><span class="row-t">Next round</span><span class="row-h" id="actNextH"></span></button>
+      </div>
+    </section>
+
+    <section class="clock-card env-card">
+      <div class="label">Envelopes</div>
+      <div id="envCount" class="clock small-clock">0 of 20</div>
+      <div id="clockSub" class="note"></div>
+      <div class="clock-btns">
+        <button id="tDrop" class="pill-btn wide lit">Open the next envelope</button>
+        <button id="tStart" class="pill-btn wide">Auto: off</button>
+      </div>
+      <label class="int">Auto: one every <select id="tInt"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>8</option><option>10</option></select> minutes</label>
+    </section>
+
+    <section class="orders-card" id="ordersCard" hidden>
+      <div class="label">Party challenges this round</div>
+      <div id="orders" class="orders"></div>
+    </section>
+
+    <div class="tool-row">
+      <button id="hot" class="tool"><span class="tool-i">&#9679;</span><span><b>Hot seat</b><small>Two minutes of questions</small></span></button>
+      <button id="interrupt" class="tool" hidden><span class="tool-i">&#10070;</span><span><b>Corvin interrupts</b><small>When it goes quiet</small></span></button>
+      <button id="intro" class="tool"><span class="tool-i">&#10022;</span><span><b>Introductions</b><small>Every guest&rsquo;s card</small></span></button>
+      <button id="whisper" class="tool" style="display:none"><span class="tool-i">&#10087;</span><span><b>Corvin whispers</b><small>A secret mission to one phone</small></span></button>
+    </div>
+
+    <section class="vote-card" id="voteCard">
+      <div class="label">Accusations</div>
+      <div class="vote-line"><span id="voteCount" class="vote-n">0 of 10</span><span id="voteState" class="note">Vote not open</span></div>
+      <div class="vote-bar"><span id="voteBar"></span></div>
+      <button id="voteBtn" class="pill-btn wide">Open the vote</button>
+    </section>
+
+    <button id="seal" class="row seal big"><span class="row-t">Break the seal</span><span class="row-h">Hold three seconds</span><span class="seal-fill" id="sealFill"></span></button>
+
+    <div class="foot">
+      <button id="bye" class="link-btn"><span id="byeH">End the night</span></button>
+      <span class="wall"><span class="dot"></span><span id="wall" class="wall-time">00:00</span></span>
+    </div>
+  </aside>
+
+  <section class="stage">
+    <div class="stage-top"><span class="label" id="exLabel">Larkspur House</span><nav id="shelf" class="shelf" aria-label="Envelopes"></nav></div>
+    <div id="exhibit" class="exhibit-wrap"></div>
+  </section>
+
+  <aside class="side">
+    <div class="glass side-card persons-card">
+      <div class="label">Guests <span id="online" class="online"></span></div>
+      <ol id="persons" class="persons"></ol>
+    </div>
+    <div class="glass side-card wires-card">
+      <div class="label">Telegrams &amp; oaths</div>
+      <ol id="wires" class="wires"><li class="empty">Nothing yet. Guests can send anonymous telegrams, and spend their oath tokens, from their phones.</li></ol>
+    </div>
+  </aside>
+</main>
+
+<!-- spotlight -->
+<div id="spot" class="spot-overlay" hidden>
+  <div class="spot-card glass">
+    <div class="spot-top"><span class="eyebrow" id="spotKind">Now arriving</span><span class="note" id="spotNo"></span></div>
+    <div class="spot-body">
+      <div class="spot-mono" id="spotMono"></div>
+      <div class="spot-text">
+        <h2 class="spot-name" id="spotName"></h2>
+        <div class="spot-arch" id="spotArch"></div>
+        <p class="spot-public" id="spotPublic"></p>
+        <p class="spot-played">Played by <b id="spotPlayed"></b></p>
+      </div>
+    </div>
+    <blockquote class="spot-line" id="spotLine"></blockquote>
+    <ol class="spot-qs" id="spotQs"></ol>
+    <div class="spot-timer" id="spotTimer" hidden><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17"/><circle id="spotArc" cx="20" cy="20" r="17"/></svg><span id="spotT">2:00</span></div>
+    <div class="spot-nav">
+      <button id="spotPrev" class="pill-btn">&larr; Back</button>
+      <button id="spotClose" class="pill-btn">Close</button>
+      <button id="spotNext" class="row lit"><span class="row-t" id="spotNextT">Next guest</span><span class="row-h"></span></button>
+    </div>
+  </div>
+</div>
+
+<!-- Corvin interrupts / party challenge / oath: one big card -->
+<!-- the grand unmasking: one step at a time -->
+<div id="unmask" class="unmask" hidden>
+  <div class="unmask-in">
+    <div class="eyebrow" id="umK">The gathering</div>
+    <div id="umT" class="um-t display"></div>
+    <ol id="umList" class="um-list"></ol>
+    <div class="um-foot"><span id="umN" class="um-n"></span><button id="umNext" class="row lit"><span class="row-t">Go on</span><span class="row-h">Space</span></button></div>
+  </div>
+</div>
+
+<div id="call" class="call-overlay" hidden>
+  <div class="call-card glass">
+    <div class="eyebrow" id="callK">Corvin interrupts</div>
+    <p class="call-t display" id="callT"></p>
+    <div class="spot-nav"><button id="callAgain" class="pill-btn">Another</button><button id="callOk" class="row lit"><span class="row-t">Carry on</span><span class="row-h"></span></button></div>
+  </div>
+</div>
+
+<div id="needle" class="needle-overlay" hidden>
+  <svg class="chart" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><path id="trace" d=""/></svg>
+  <div id="needleStamp" class="big-stamp">TRUTH</div>
+</div>
+
+<!-- the truth -->
+<div id="verdict" class="verdict-overlay" hidden>
+  <div class="glass verdict-card wide-verdict">
+    <div class="eyebrow">Sealed envelope &middot; opened before all the guests</div>
+    <div class="verdict-word">Guilty</div>
+    <p id="vName" class="display verdict-name"></p>
+    <p id="vRole" class="lede"></p>
+    <div class="v-cols">
+      <div class="v-story">
+        <div class="label">Corvin&rsquo;s account <button id="vSpeak" class="mini-btn" type="button">&#128266; Read aloud</button></div>
+        <div id="vStory" class="v-text"></div>
+        <details class="v-proof"><summary>How it could be proved</summary><ol id="vProof"></ol></details>
+      </div>
+      <div class="v-numbers">
+        <div id="vTally" class="v-tally"></div>
+        <div class="label">Scores</div>
+        <ol id="vScores" class="v-scores"></ol>
+      </div>
+    </div>
+    <div class="spot-nav"><button id="vMorning" class="pill-btn">The morning after</button><button id="vLast" class="pill-btn">The last shot</button><button id="vClose" class="row lit"><span class="row-t">Close</span></button></div>
+  </div>
+</div>
+
+<script>window.NET = { role: "host" };</script>
+<script src="/js/net.js"></script>
+<script src="/js/fullscreen.js"></script>
+<script src="/js/sound.js"></script>
+<script src="/js/exhibit.js"></script>
+<script src="/js/qr.js"></script>
+<script src="/js/corvin-film.js"></script>
+<script src="/js/larkspur-polish.js"></script>
+<script src="/js/host.js"></script>
+</body>
+</html>

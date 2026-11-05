@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07090f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="/manifest.webmanifest">
+<title>The Larkspur Dome</title>
+<link rel="icon" href="/media/crest.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;1,6..96,400;1,6..96,500&family=Spectral:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&family=Courier+Prime:wght@400;700&family=IM+Fell+English&display=swap">
+<link rel="stylesheet" href="/css/paper.css">
+<link rel="stylesheet" href="/css/night.css">
+<link rel="stylesheet" href="/css/notebook.css">
+<link rel="stylesheet" href="/css/larkspur.css">
+</head>
+<body class="night phone">
+<canvas id="film" class="film" aria-hidden="true"></canvas>
+<div class="bg" aria-hidden="true"></div>
+
+<main class="glass card" id="page">
+  <!-- Corvin's crest. Long-press: left half TRUTH, right half DECEPTION. Only the host is told. -->
+  <div id="ring" class="crest" aria-hidden="true"><span>C</span></div>
+
+  <div class="eyebrow">The Larkspur Dome &middot; Argyll, 1952</div>
+  <ol class="progress" id="progress" aria-label="Joining"><li>Name</li><li>Police form</li><li>Wait</li></ol>
+
+  <section id="s-room" class="stage" hidden>
+    <h1 class="display">The Larkspur Dome</h1>
+    <p class="lede">Type the four-letter code on the host&rsquo;s screen.</p>
+    <form id="fRoom" autocomplete="off">
+      <label class="label" for="roomIn">Game code</label>
+      <input id="roomIn" class="field code-field" maxlength="4" autocapitalize="characters" placeholder="ABCD" required>
+      <button class="row lit big"><span class="row-t">Join the game</span><span class="row-h"></span></button>
+      <p id="roomErr" class="note warn" role="alert"></p>
+    </form>
+  </section>
+
+  <section id="s-name" class="stage" hidden>
+    <h1 class="display">The Larkspur Dome</h1>
+    <p class="lede">You are expected at Larkspur House for the Perseids. Sign the visitors&rsquo; book.</p>
+    <form id="fName" autocomplete="off">
+      <label class="label" for="name">Your real name</label>
+      <input id="name" class="field" maxlength="28" autocapitalize="words" placeholder="e.g. Sarah Jones" required>
+      <div class="label">Tonight you will play</div>
+      <div class="parts" role="radiogroup">
+        <label class="part-tile"><input type="radio" name="gender" value="F" required>
+          <span class="pt-in"><span class="pt-ico" aria-hidden="true">&#9827;</span><span class="pt-t">A lady</span><span class="pt-s" id="leftF">7 of 7 left</span></span></label>
+        <label class="part-tile"><input type="radio" name="gender" value="M">
+          <span class="pt-in"><span class="pt-ico" aria-hidden="true">&#9824;</span><span class="pt-t">A gentleman</span><span class="pt-s" id="leftM">3 of 3 left</span></span></label>
+      </div>
+      <button class="row lit big"><span class="row-t">Enter the house</span><span class="row-h">Full screen</span></button>
+      <p id="nameErr" class="note warn" role="alert"></p>
+    </form>
+  </section>
+
+  <section id="s-intake" class="stage" hidden>
+    <div class="form-head">
+      <div class="po">ARGYLL COUNTY CONSTABULARY</div>
+      <div class="wire-sub">Statement of person present &middot; Larkspur House, 12th August 1952</div>
+    </div>
+    <p class="lede">Describe <b>yourself</b>, the real you, as you are dressed tonight. Corvin is watching, and some of what he sees will turn up later. Answer truthfully, and don&rsquo;t change your watch, ring or top during the game.</p>
+    <form id="fIntake" autocomplete="off">
+      <div class="label">1. Which hand do you write with?</div>
+      <div class="seg" data-f="hand"><button type="button" data-v="left">Left</button><button type="button" data-v="right">Right</button></div>
+      <div class="label">2. Are you wearing a watch?</div>
+      <div class="seg" data-f="watch"><button type="button" data-v="left">Left wrist</button><button type="button" data-v="right">Right wrist</button><button type="button" data-v="none">No watch</button></div>
+      <div class="label">3. Are you wearing a ring?</div>
+      <div class="seg" data-f="ring"><button type="button" data-v="left">Left hand</button><button type="button" data-v="right">Right hand</button><button type="button" data-v="none">No ring</button></div>
+      <div class="label">4. What colour is your top?</div>
+      <div class="swatches" id="swatches"></div>
+      <button class="row lit big"><span class="row-t">Sign the statement</span><span class="row-h">Then wait for the others</span></button>
+      <p id="intakeErr" class="note warn" role="alert"></p>
+    </form>
+  </section>
+
+  <section id="s-pending" class="stage" hidden>
+    <h1 class="display">Waiting for the others</h1>
+    <p class="note" id="pendName"></p>
+    <div class="pending"><div class="seal-ring"><span>Larkspur<br>1952</span></div></div>
+    <div class="fill-bars">
+      <div><span>Ladies</span><span class="bar"><i id="barF"></i></span><b id="cntF">0/7</b></div>
+      <div><span>Gentlemen</span><span class="bar"><i id="barM"></i></span><b id="cntM">0/3</b></div>
+    </div>
+    <p class="lede center">Your secret character arrives here when all ten guests have signed in and the host hands out the dossiers. Keep your screen to yourself from then on.</p>
+    <p class="note center ios-tip" id="iosTip" hidden>On an iPhone: tap Share, then <b>Add to Home Screen</b>, and open Larkspur from there for full screen.</p>
+  </section>
+
+  <section id="s-dossier" class="stage" hidden>
+    <div class="label top">Dossier &middot; for your eyes only</div>
+    <h1 id="dName" class="display small"></h1>
+    <div id="dArch" class="arch"></div>
+    <p id="dPublic" class="lede"></p>
+
+    <button id="actBanner" class="act-banner" type="button">
+      <span class="ab-n" id="abN"></span>
+      <span class="ab-t"><b id="abTitle"></b><span id="abDo"></span><span id="abBeat" class="ab-beat"></span></span>
+    </button>
+
+    <div id="whisperCard" class="whisper-card" hidden style="display:none">
+      <div class="wc-k">Corvin whispers &middot; secret mission</div>
+      <p id="whisperT" class="wc-t"></p>
+      <button id="whisperDone" class="row lit"><span class="row-t">I&rsquo;ve done it</span><span class="row-h">+1 point</span></button>
+    </div>
+
+    <nav class="tabs" id="tabs" role="tablist">
+      <button data-p="p-rules" aria-current="true">Rules</button>
+      <button data-p="p-part">Your part</button>
+      <button data-p="p-nine">Alibi</button>
+      <button data-p="p-secret">Secret</button>
+      <button data-p="p-goals">Goals <i id="goalN" class="tab-n"></i></button><i id="clueN" hidden></i><i id="evN" hidden></i><i id="inqN" hidden></i>
+      <button data-p="p-book">Notes</button>
+      <button data-p="p-people">People</button>
+      <button data-p="p-diary">Diary</button>
+      <button data-p="p-sealed">Sealed</button>
+      <button data-p="p-vote" id="voteTab" hidden>Accuse</button>
+    </nav>
+
+    <div class="panel" id="p-rules">
+      <h2 class="h">How to play</h2>
+      <p class="note">This is a traditional murder-mystery party. Put the phone down and talk to each other. The phone is only your rulebook, your character booklet, your alibi and your notebook.</p>
+      <ol class="list">
+        <li><b>Be your character.</b> Read <i>Your part</i>, <i>Secret</i> and <i>People</i> before the first round. Dress the part, use the voice, keep the habits all night.</li>
+        <li><b>Never break character.</b> From the moment you arrive until the truth is revealed, you are your character: the voice, the manners, the opinions. Anyone caught slipping out of character owes the room a forfeit, chosen by the host.</li>
+        <li><b>Reveal and hide.</b> At the start of every round your phone buzzes with <i>Reveal this now</i>: something your character must tell the room that round, in your own words. Everything on your <i>Secret</i> tab stays hidden unless you are caught.</li>
+        <li><b>Introduce yourself.</b> When the host calls your name, stand up and say your opening line.</li>
+        <li><b>Know your alibi.</b> It is on the <i>Alibi</i> tab, part of your story. Learn it and stick to it: from round IV it is your sworn statement.</li>
+        <li><b>Work together.</b> The household is a team. Share what you have seen, check each other's alibis and pool the clues. If most of the room names the killer, the household wins together. The killer wins alone if the vote goes wrong.</li>
+        <li><b>Clues are read aloud.</b> Each round the host opens envelopes on the big screen and reads them to the room. Listen carefully. Nothing appears on your phone.</li>
+        <li><b>Question everyone, face to face.</b> Ask where they were, who they saw, what they gain. Whisper in corners, form alliances, trade what you know.</li>
+        <li><b>The one rule of lying.</b> You may lie about your secret and your night. You may never lie about a clue that has been read out.</li>
+        <li><b>The hot seat.</b> The host may put someone in the hot seat: two minutes of questions from the room, answered in character. The room decides for itself who is lying.</li>
+        <li><b>Motive, means, opportunity.</b> The killer is the only guest who had all three: a reason to want him dead, a way to do it, and the time to do it. Keep notes on the <i>Notes</i> tab for every guest. Watch for red herrings: plenty of people look guilty.</li>
+        <li><b>Listen to Corvin.</b> Corvin saw everything from the dome and knows who did it. He will never say the name, but each round he whispers where to look.</li>
+        <li><b>The accusation.</b> In the last round every guest stands and makes an accusation speech: who did it, how and why, in thirty seconds. Then the <i>Accuse</i> tab opens and everyone votes in secret. Then the host breaks the seal.</li>
+      </ol>
+      <div class="label">Points</div>
+      <p class="txt">Naming the killer, the method, the motive, the time and the proof all score. So do your own goals, and the best performance of the night. If you are the murderer, you score by getting away with it.</p>
+    </div>
+    <div class="panel" id="p-part" hidden>
+      <h2 class="h">How to play your part</h2>
+      <div class="say">
+        <div class="label">Your opening line</div>
+        <p id="dEntrance" class="say-line"></p>
+      </div>
+      <div class="kv"><div class="label">Your voice</div><p id="dVoice" class="txt"></p></div>
+      <div class="kv"><div class="label">What to wear</div><p id="dCostume" class="txt"></p></div>
+      <div class="label">Your habits &middot; do these all night</div>
+      <ol id="dManner" class="list"></ol>
+      <div class="label">Your moments, round by round</div>
+      <ol id="dBeats" class="beats"></ol>
+    </div>
+    <div class="panel" id="p-nine" hidden>
+      <h2 class="h">Half past eleven to midnight</h2>
+      <p class="big" id="dWhere"></p>
+      <div class="label">Choose your alibi &middot; <span id="alibiState">you can change it until round IV</span></div>
+      <ol id="alibiList" class="alibi-list"></ol>
+      <div class="label">What you tell people</div>
+      <p id="dClaim" class="txt claim"></p>
+      <div class="label">What really happened &middot; press and hold</div>
+      <p id="dTruth" class="txt hold"></p>
+      <div class="label">What only you know &middot; press and hold</div>
+      <p id="dSaw" class="txt hold"></p>
+    </div>
+    <div class="panel" id="p-secret" hidden>
+      <h2 class="h">What you must never admit</h2>
+      <div class="label">Press and hold to read</div>
+      <p id="dSecret" class="txt hold"></p>
+      <div class="label">If it comes up, say</div>
+      <p id="dDefend" class="txt claim"></p>
+      <div class="label">The danger</div>
+      <p id="dDanger" class="txt"></p>
+    </div>
+    <div class="panel" id="p-goals" hidden>
+      <h2 class="h">What you want tonight</h2>
+      <p class="note">Tick each one off when you have done it. Each is worth 2 points at the end. Be honest: the table may ask you to prove it.</p>
+      <ol id="dGoals" class="goals"></ol>
+    </div>
+    <div class="panel" id="p-clues" hidden>
+      <h2 class="h">Your envelopes</h2>
+      <p class="note">An envelope appears here when its round begins. When the big screen shows your name, read it aloud. You may lie about your secret, but never about a clue card: if someone asks to see it, show them.</p>
+      <div id="dClues" class="clue-list"></div>
+    </div>
+    <div class="panel" id="p-evidence" hidden>
+      <h2 class="h">The case file</h2>
+      <p class="note">Every envelope opened so far, for everyone. A good detective reads them twice. Look for times that don&rsquo;t fit, things that are where they shouldn&rsquo;t be, and who gains.</p>
+      <div id="statements" class="statements" hidden>
+        <div class="label">Statements taken &middot; where everyone says they were, 11.30 to midnight</div>
+        <ol id="stList" class="st-list"></ol>
+      </div>
+      <div class="label">Exhibits</div>
+      <div id="caseList" class="case-list"></div>
+    </div>
+    <div class="panel" id="p-inq" hidden>
+      <h2 class="h">Police inquiries</h2>
+      <p class="note">You have <b>two search warrants</b> and <b>one test from the murder bag</b> (the detective&rsquo;s kit of chemical tests, used by real 1950s police). What you find is for your eyes only: share it, trade it or keep it, but you may not lie about what a search or a test told you. Everyone will see on the big screen <i>where</i> you searched.</p>
+      <div class="label">Search warrants &middot; <span id="warrantsLeft"></span></div>
+      <div id="searchDone" class="found-list"></div>
+      <div id="rooms" class="room-grid"></div>
+      <div class="label">The murder bag &middot; one test, results in three minutes</div>
+      <div id="labMine" class="found-list"></div>
+      <ol id="labList" class="vote-list small"></ol>
+    </div>
+    <div class="panel" id="p-book" hidden>
+      <h2 class="h">Your casebook</h2>
+      <p class="note">Only you can see this. Every suspect needs all three: a <b>motive</b> (a reason), the <b>means</b> (a way to do it) and the <b>opportunity</b> (a moment alone with him). Tap to tick, and write down what you&rsquo;ve learnt.</p>
+      <div id="mmo" class="mmo"></div>
+      <div class="label">The timeline &middot; write down every time you hear</div>
+      <textarea id="timeline" class="book-notes" rows="8" placeholder="11.20  heard in the study…&#10;11.30  …&#10;11.45  …&#10;12.05  the cocoa"></textarea>
+      <div class="label">Anything else</div>
+      <textarea id="freeNotes" class="book-notes" rows="8" placeholder="Who was lying? Who looked nervous? What doesn&rsquo;t add up?"></textarea>
+    </div>
+    <div class="panel" id="p-people" hidden>
+      <h2 class="h">The people you know</h2>
+      <div id="dRel" class="rel"></div>
+      <div class="label">Everyone at Larkspur tonight</div>
+      <ol id="dCompany" class="company"></ol>
+    </div>
+    <div class="panel" id="p-diary" hidden><h2 class="h">From your own diary</h2><div id="dDiary"></div></div>
+    <div class="panel" id="p-sealed" hidden>
+      <h2 class="h">Sealed page</h2>
+      <div class="label">Press and hold to read. Let no one see.</div>
+      <div id="dSealed" class="hold sealed"></div>
+    </div>
+    <div class="panel" id="p-vote" hidden>
+      <h2 class="h">The accusation</h2>
+      <p class="note">Secret. Nobody sees your choices until the seal is broken. You can change them until then.</p>
+      <div class="label">Who killed Professor Vale? (5 points)</div>
+      <ol id="voteList" class="vote-list"></ol>
+      <div class="label">How? (3 points)</div>
+      <ol id="voteMethod" class="vote-list small"></ol>
+      <div class="label">Why? (3 points)</div>
+      <ol id="voteMotive" class="vote-list small"></ol>
+      <div class="label">When was the fatal dose given? (2 points)</div>
+      <ol id="voteWhen" class="vote-list small"></ol>
+      <div class="label">Which exhibit proves who did it? (2 points)</div>
+      <ol id="voteEvidence" class="vote-list small"></ol>
+      <div class="label">Best performance tonight (3 points to the winner)</div>
+      <ol id="voteBest" class="vote-list small"></ol>
+      <p id="voteMsg" class="note warn" role="alert"></p>
+    </div>
+
+    <div class="dock" style="display:none">
+      <button id="oathBtn" class="row oath-row"><span class="row-t">Spend your oath token</span><span class="row-h" id="oathH">One question, answered truthfully</span></button>
+      <button id="wireBtn" class="row lit wire-row"><span class="row-t">Send a telegram</span><span class="row-h">Anonymous</span></button>
+    </div>
+  </section>
+
+  <section id="s-ended" class="stage" hidden>
+    <h1 class="display">Case closed</h1>
+    <p class="lede">Look at the main screen. Thank you for coming to Larkspur.</p>
+    <div id="endScore" class="end-score"></div>
+  </section>
+</main>
+
+<div id="spot" class="spot" hidden>
+  <div class="spot-in">
+    <div class="eyebrow" id="spotK">You&rsquo;re on</div>
+    <h2 class="display" id="spotH">Stand up</h2>
+    <p class="lede center" id="spotP"></p>
+    <button id="spotDone" class="row big" hidden><span class="row-t">I&rsquo;ve done it</span><span class="row-h">+1 point</span></button>
+    <button id="spotOk" class="row lit big"><span class="row-t">Got it</span><span class="row-h"></span></button>
+  </div>
+</div>
+
+<div id="oath" class="wire-overlay" hidden>
+  <div class="oath-form">
+    <div class="wire-head"><div class="po">THE OATH</div><div class="wire-sub">One token, once. The guest you choose must answer one question truthfully. Only the murderer may lie.</div></div>
+    <ol id="oathList" class="vote-list small"></ol>
+    <div class="wire-foot"><span></span><span><button type="button" id="oathCancel" class="wbtn">Keep it</button></span></div>
+    <p id="oathErr" class="note warn"></p>
+  </div>
+</div>
+
+<div id="wire" class="wire-overlay" hidden>
+  <form id="fWire" class="wire-form">
+    <div class="wire-head">
+      <div class="po">POST OFFICE TELEGRAPHS</div>
+      <div class="wire-sub">Inland telegram &middot; your name will not be sent</div>
+    </div>
+    <textarea id="wireText" maxlength="140" rows="4" placeholder="ASK THE DOCTOR ABOUT HIS CARDS" required></textarea>
+    <div class="wire-foot">
+      <span id="wireCount" class="wire-sub">0 / 140</span>
+      <span>
+        <button type="button" id="wireCancel" class="wbtn">Cancel</button>
+        <button class="wbtn go">Hand in</button>
+      </span>
+    </div>
+    <p id="wireErr" class="note warn"></p>
+  </form>
+</div>
+
+<div id="offline" class="offline" hidden>Reconnecting to the house&hellip;</div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+  (function () {
+    var r = (new URLSearchParams(location.search).get('room') || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
+    var pid = null; try { pid = r && localStorage.getItem('pid:' + r); } catch (e) {}
+    window.NET = { role: 'player', room: r, pid: pid };
+  })();
+</script>
+<script src="/js/net.js"></script>
+<script src="/js/fullscreen.js"></script>
+<script src="/js/corvin-film.js"></script>
+<script src="/js/larkspur-polish.js"></script>
+<script src="/js/play.js"></script>
+</body>
+</html>

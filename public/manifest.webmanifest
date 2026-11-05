@@ -1,0 +1,10 @@
+{
+  "name": "The Larkspur Dome",
+  "short_name": "Larkspur",
+  "start_url": "/play",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#07090f",
+  "theme_color": "#07090f",
+  "icons": [{ "src": "/media/crest.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

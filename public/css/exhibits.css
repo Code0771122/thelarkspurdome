@@ -1,0 +1,87 @@
+/* Paper exhibits, polygraph stamp. Shared by the laptop. */
+/* ------------------------------------------------ exhibits */
+.exhibit-wrap { min-height: 60vh; display: grid; place-items: start center; padding: 6px 0 20px; }
+.shelf { display: flex; flex-wrap: wrap; gap: 6px; border-top: 1px dashed rgba(0,0,0,.35); padding-top: 12px; }
+.shelf button {
+  font-family: var(--type); font-size: .75rem; letter-spacing: .06em;
+  background: #f0e7cf; border: 1px solid rgba(0,0,0,.25); padding: 5px 9px; color: var(--ink);
+  box-shadow: 0 1px 2px rgba(0,0,0,.3);
+}
+.shelf button[aria-current="true"] { background: var(--ink); color: #f0e7cf; }
+
+.ex { position: relative; width: min(100%, 760px); padding: 34px 42px 38px; line-height: 1.55; animation: land .6s cubic-bezier(.2,.8,.3,1); }
+@keyframes land { from { transform: translateY(-40px) rotate(-3deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.ex h2 { font-family: var(--type); font-size: 1.05rem; letter-spacing: .1em; margin: 0 0 4px; padding-right: 130px; }
+.ex .sub { font-family: var(--type); font-size: .8rem; color: var(--ink-soft); margin: 0 0 20px; border-bottom: 1px solid rgba(0,0,0,.4); padding-bottom: 10px; }
+.ex p { font-family: var(--type); margin: 0 0 .8em; font-size: 1.02rem; }
+.ex .exno { position: absolute; top: 14px; right: 18px; }
+.ex .exno .stamp { font-size: .8rem; color: var(--stamp-blue); transform: rotate(4deg); }
+.ex .clip { position: absolute; top: -14px; left: 46px; width: 22px; height: 58px; border: 3px solid #8c8c8c; border-radius: 12px; border-bottom-color: transparent; box-shadow: 1px 1px 1px rgba(0,0,0,.4); }
+
+/* brief: typed foolscap with a confidential stamp */
+.ex.k-brief { background-color: var(--foolscap); transform: rotate(-.3deg); }
+.ex.k-brief .conf { position: absolute; right: 40px; bottom: 26px; font-size: 1.3rem; }
+
+/* telegram: buff form with pasted tape */
+.ex.k-telegram { background-color: var(--telegram); transform: rotate(.5deg); }
+.ex.k-telegram h2 { font-family: var(--serif); letter-spacing: .25em; text-align: center; font-size: 1.3rem; }
+.ex.k-telegram .sub { text-align: center; font-family: var(--serif); font-style: italic; }
+.ex.k-telegram p { display: inline-block; background: #f6f1e2; padding: 2px 10px; margin: 0 6px 10px 0; font-weight: 700; letter-spacing: .08em;
+  box-shadow: 0 1px 1px rgba(0,0,0,.25); transform: rotate(var(--r, 0deg)); }
+
+/* report: white bond, left-ruled margin */
+.ex.k-report { background-color: #f4f0e6; background-image: var(--grain), linear-gradient(90deg, transparent 54px, rgba(170,60,50,.45) 54px 55px, transparent 55px); padding-left: 76px; transform: rotate(.25deg); }
+
+/* statement: lined, written in a careful hand */
+.ex.k-statement { background-color: #f5f0e2; background-image: var(--grain), repeating-linear-gradient(transparent 0 30px, rgba(60,90,140,.28) 30px 31px); transform: rotate(-.6deg); }
+.ex.k-statement p { font-family: var(--serif); font-size: 1.2rem; line-height: 31px; margin: 0; }
+.ex.k-statement p:last-child { margin-top: 12px; font-style: italic; }
+
+/* lab: teleprinter roll with tractor holes */
+.ex.k-lab { background-color: #f1efe6; padding-left: 64px; padding-right: 64px; transform: rotate(.15deg);
+  background-image: var(--grain),
+    radial-gradient(circle at 22px 18px, var(--walnut) 5px, transparent 6px),
+    radial-gradient(circle at calc(100% - 22px) 18px, var(--walnut) 5px, transparent 6px),
+    repeating-linear-gradient(transparent 0 28px, rgba(80,140,90,.10) 28px 56px);
+  background-size: auto, 100% 36px, 100% 36px, auto; }
+.ex.k-lab p { text-transform: uppercase; font-size: .95rem; letter-spacing: .04em; }
+
+/* letter: letterhead, onion skin */
+.ex.k-letter { background-color: var(--onion); transform: rotate(-.4deg); }
+.ex.k-letter h2 { font-family: var(--serif); letter-spacing: .14em; text-align: center; font-size: 1.15rem; }
+.ex.k-letter .sub { text-align: center; }
+
+/* register / ledger: ruled columns */
+.ex.k-register, .ex.k-ledger { background-color: #ece3c9; transform: rotate(.6deg);
+  background-image: var(--grain), repeating-linear-gradient(transparent 0 32px, rgba(30,60,110,.3) 32px 33px), linear-gradient(90deg, transparent 70px, rgba(170,60,50,.5) 70px 71px, transparent 71px); }
+.ex.k-register p, .ex.k-ledger p { line-height: 33px; margin: 0; padding-left: 40px; }
+
+/* card: small notepaper */
+.ex.k-card { width: min(100%, 520px); background-color: #f7efe0; transform: rotate(-2deg); }
+.ex.k-card p:nth-child(4) { font-family: var(--serif); font-size: 1.35rem; font-style: italic; }
+
+/* ticket: perforated stub */
+.ex.k-ticket { width: min(100%, 560px); background-color: #e7d9b8; transform: rotate(1.4deg);
+  -webkit-mask: radial-gradient(circle 6px at 0 50%, transparent 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 6px at 100% 50%, transparent 98%, #000) right / 51% 100% no-repeat; }
+.ex.k-ticket h2 { font-family: var(--serif); letter-spacing: .18em; }
+
+/* record: Yard index card */
+.ex.k-record { width: min(100%, 640px); background-color: #f3f1ea; transform: rotate(-1deg);
+  background-image: var(--grain), repeating-linear-gradient(transparent 0 26px, rgba(40,80,150,.3) 26px 27px), linear-gradient(transparent 70px, rgba(170,60,50,.6) 70px 72px, transparent 72px); }
+
+/* ------------------------------------------------ polygraph */
+.needle-overlay { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; background: rgba(12,8,5,.78); }
+.chart { position: absolute; left: 0; right: 0; top: 50%; height: 34vh; transform: translateY(-50%); width: 100%;
+  background: repeating-linear-gradient(90deg, rgba(200,80,70,.25) 0 1px, transparent 1px 40px), repeating-linear-gradient(0deg, rgba(200,80,70,.25) 0 1px, transparent 1px 30px), #efe8d8; opacity: .92; }
+.chart path { fill: none; stroke: #1d1b19; stroke-width: 2.4; }
+.big-stamp {
+  position: relative; font-family: var(--type-worn); font-size: clamp(5rem, 15vw, 13rem); letter-spacing: .08em;
+  border: .09em solid currentColor; padding: .02em .3em; border-radius: .06em; transform: rotate(-9deg) scale(1);
+  animation: slam .32s cubic-bezier(.3,1.6,.5,1);
+  -webkit-mask-image: radial-gradient(circle at 40% 45%, #000 50%, rgba(0,0,0,.7) 68%, #000 86%);
+  mask-image: radial-gradient(circle at 40% 45%, #000 50%, rgba(0,0,0,.7) 68%, #000 86%);
+}
+.big-stamp.truth { color: #1f5a4a; }
+.big-stamp.deception { color: #b3261c; }
+@keyframes slam { from { transform: rotate(-9deg) scale(2.4); opacity: 0; } to { transform: rotate(-9deg) scale(1); opacity: 1; } }
+
